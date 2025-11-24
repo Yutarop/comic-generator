@@ -7,9 +7,9 @@ from google import genai
 from google.genai import types
 from PIL import Image
 
-from combine import combine_images_vertical
-from prompt import get_plot_writer_prompt
-from prompt_splitter import split_pages
+from src.combine import combine_images_vertical
+from src.prompt import get_plot_writer_prompt
+from src.prompt_splitter import split_pages
 
 load_dotenv()
 client = genai.Client()
@@ -55,7 +55,7 @@ def generate_comic(num_pages, theme, additional_content, character_image):
     # Generate each page
     page_images = []
     image_files = []
-    max_retries = 3
+    max_retries = 2
 
     for page_num in range(1, num_pages + 1):
         status_text.text(
