@@ -1,17 +1,30 @@
 # Comic Generator with Nano Banana Pro 🍌
-![banner2](https://github.com/user-attachments/assets/8e8ef84d-349f-4c64-8e36-a06c655b994d)
+
+<p align="center">
+  <img src="https://github.com/Yutarop/comic-generator/blob/main/demo/demo.gif" />
+</p>  
 
 
-This repository explores how far **Nano Banana Pro** can go in generating manga-style comics from scratch. 
-You can provide a one-sentence theme, detailed instructions, and a character reference image to create your own manga. 
+This repo shows how far **Nano Banana Pro** can go in making manga-style comics from scratch. 
+Just give it a one-sentence theme or idea, and optionally add detailed instructions or a character reference image, to bring your idea to life as a manga.  
 With this, you can:
 - Generate a complete 1–7 page manga automatically
-- Let the AI create a full plot from just a theme
+- Let the LLM create a full plot
 - Use a character reference image to keep designs consistent
 
-# Example
-- Check out this [example](https://github.com/Yutarop/comic-generator/blob/main/demo/lena-input.pdf) where I used a picture of [Lena](https://en.wikipedia.org/wiki/Lenna) and set the theme to romantic comedy.
-- See another [example](https://github.com/Yutarop/comic-generator/blob/main/demo/interstellar-like-manga.pdf) with a story like the movie Interstellar.
+# Example Generated Comics 
+#### Settings:
+- `Page`: 4
+- `Additional instructions`: None
+- `Theme`: Romantic Comedy
+- `Character reference image`: [Lena](https://en.wikipedia.org/wiki/Lenna)
+
+<p align="center">
+  <img width="500" height="2666" alt="demo2" src="https://github.com/Yutarop/comic-generator/blob/main/demo/demo2.png" /> 
+</p>
+
+> This is one-shot attempt, no editing.
+> There is a typo and a repeated line, but pretty good!
 
 # Setup
 ### 1. Install Dependencies
@@ -52,6 +65,34 @@ The app will be available at: http://localhost:8501
 - (Optional) Upload a character design reference
 - Click Generate Manga (take a while)
 - Download the full comic or individual pages
+
+
+# Model Call Breakdown
+This project uses Google’s Gemini API, and **each comic generation requires multiple model calls**.  
+Since API usage incurs costs, here is a clear breakdown of how many times each model is called.
+
+### **1. Plot Generation (1 call total)**
+- The **`gemini-3-pro-preview`** model is called **once** to generate the entire manga plot.  
+- This cost is fixed, regardless of the number of pages.
+
+### **2. Page Image Generation (1 call per page)**
+- For each comic page, the **`gemini-3-pro-image-preview`** model is called **once**.
+- Example:  
+  - **4 pages → 4 image model calls**  
+  - **6 pages → 6 image model calls**
+
+### **3. Character Consistency Across Pages**
+- To maintain consistent characters, **from page 2 onward, the previous page’s image is included in the prompt**.  
+- This does *not* increase the number of API calls, but it does increase prompt size (and therefore may slightly increase cost depending on token usage).
+
+#### **Example Usage**
+For a **4-page comic**:
+
+| Action | Model | Calls |
+|--------|--------|--------|
+| Generate plot | `gemini-3-pro-preview` | **1** |
+| Generate page images | `gemini-3-pro-image-preview` | **4** |
+| **Total API calls** | — | **5 calls** |
 
 # License
 MIT
