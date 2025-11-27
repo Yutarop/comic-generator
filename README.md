@@ -94,5 +94,10 @@ For a **4-page comic**:
 | Generate page images | `gemini-3-pro-image-preview` | **4** |
 | **Total API calls** | — | **5 calls** |
 
+# Troubleshooting
+### Known Issues
+"Response has no valid parts attribute" Error  
+This is a known intermittent issue where the API occasionally fails to return valid image data. The exact same request may succeed on one attempt and fail on the next. Possible causes include content safety filters, temporary server capacity limits, or timeout/network issues. In most cases, simply retrying the generation will succeed.
+
 # License
 MIT
