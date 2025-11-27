@@ -15,7 +15,7 @@ load_dotenv()
 client = genai.Client()
 
 
-def generate_comic(num_pages, theme, additional_content, character_image):
+def generate_comic(num_pages, theme, additional_content, character_image, language, image_size):
     """Main function to generate a manga comic"""
 
     progress_bar = st.progress(0)
@@ -25,7 +25,7 @@ def generate_comic(num_pages, theme, additional_content, character_image):
     status_text.text("Step 1: Generating plot...")
     progress_bar.progress(10)
 
-    plot_writer_prompt = get_plot_writer_prompt(theme, additional_content, num_pages)
+    plot_writer_prompt = get_plot_writer_prompt(theme, additional_content, num_pages, language)
 
     plot_response = client.models.generate_content(
         model="gemini-3-pro-preview", contents=plot_writer_prompt
@@ -48,7 +48,7 @@ def generate_comic(num_pages, theme, additional_content, character_image):
         model="gemini-3-pro-image-preview",
         config=types.GenerateContentConfig(
             response_modalities=["IMAGE"],
-            image_config=types.ImageConfig(aspect_ratio="3:4", image_size="1K"),
+            image_config=types.ImageConfig(aspect_ratio="3:4", image_size=image_size),
         ),
     )
 
@@ -161,6 +161,22 @@ def main():
     with st.sidebar:
         st.header("⚙️ Settings")
 
+        # Language selection
+        language = st.selectbox(
+            "Language",
+            options=["English", "Japanese"],
+            index=0,
+            help="Select the language for the manga content (dialogue, narration, etc.)",
+        )
+
+        # Image resolution selection
+        image_size = st.selectbox(
+            "Image Resolution",
+            options=["1K", "2K", "4K"],
+            index=0,
+            help="Select the resolution for generated images (higher resolution = better quality but slower generation)",
+        )
+
         # Number of pages
         num_pages = st.slider(
             "Number of Pages",
@@ -203,14 +219,14 @@ def main():
             st.image(
                 character_image,
                 caption="Uploaded Image",
-                use_container_width=True,
+                width="stretch",
             )
 
         st.markdown("---")
 
         # Generate button
         generate_button = st.button(
-            "🎨 Generate Manga", type="primary", use_container_width=True
+            "🎨 Generate Manga", type="primary", width="stretch"
         )
 
     # Main area
@@ -218,23 +234,27 @@ def main():
 
     with col1:
         st.subheader("📋 Current Settings")
+        st.write(f"**Language:** {language}")
+        st.write(f"**Image Resolution:** {image_size}")
         st.write(f"**Pages:** {num_pages}")
         st.write(f"**Theme:** {theme}")
         st.write(
             f"**Additional Instructions:** {additional_content if additional_content != 'up to you' else 'AI decides'}"
         )
-        st.write(f"**Character Image:** {'Yes ✓' if character_image else 'None'}")
+        st.write(f"**Character Image:** {'Yes ✔' if character_image else 'None'}")
 
     with col2:
         st.subheader("ℹ️ How to Use")
         st.markdown(
             """
-        1. Choose the number of pages (1–7) in the sidebar  
-        2. Enter a theme (e.g., Sci-fi adventure, Horror, Rom-com)  
-        3. (Optional) Add specific story elements  
-        4. (Optional) Upload a character design reference image  
-        5. Click **"Generate Manga"**  
-        6. Once complete, view individual pages and the full comic  
+        1. Select the language (Japanese or English) in the sidebar
+        2. Select the image resolution (1K, 2K, or 4K) in the sidebar
+        3. Choose the number of pages (1–7) in the sidebar  
+        4. Enter a theme (e.g., Sci-fi adventure, Horror, Rom-com)  
+        5. (Optional) Add specific story elements  
+        6. (Optional) Upload a character design reference image  
+        7. Click **"Generate Manga"**  
+        8. Once complete, view individual pages and the full comic  
         """
         )
 
@@ -249,7 +269,7 @@ def main():
         try:
             with st.spinner("Generating your manga..."):
                 output_file, image_files = generate_comic(
-                    num_pages, theme, additional_content, character_image
+                    num_pages, theme, additional_content, character_image, language, image_size
                 )
 
             st.success("🎉 Manga generated successfully!")
@@ -257,7 +277,7 @@ def main():
             # Display final combined comic
             st.subheader("📖 Completed Manga")
             final_image = Image.open(output_file)
-            st.image(final_image, use_container_width=True)
+            st.image(final_image, width="stretch")
 
             # Download button for full comic
             with open(output_file, "rb") as file:
@@ -266,7 +286,7 @@ def main():
                     data=file,
                     file_name=output_file,
                     mime="image/png",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             st.markdown("---")
@@ -282,7 +302,7 @@ def main():
                     st.image(
                         page_image,
                         caption=f"Page {idx + 1}",
-                        use_container_width=True,
+                        width="stretch",
                     )
 
                     # Individual download button
@@ -293,7 +313,7 @@ def main():
                             file_name=image_path,
                             mime="image/png",
                             key=f"download_{idx}",
-                            use_container_width=True,
+                            width="stretch",
                         )
 
         except Exception as e:
