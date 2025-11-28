@@ -12,9 +12,6 @@ With this, you can:
 - Let the LLM create a full plot
 - Use a character reference image to keep designs consistent
 
-> This is one-shot attempt, no editing.
-> There is a typo and a repeated line, but pretty good!
-
 # Setup
 ### 1. Install Dependencies
 The project uses [uv](https://docs.astral.sh/uv/) for project management.
