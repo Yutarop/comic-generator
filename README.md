@@ -12,17 +12,6 @@ With this, you can:
 - Let the LLM create a full plot
 - Use a character reference image to keep designs consistent
 
-# Example Generated Comics 
-#### Settings:
-- `Page`: 4
-- `Additional instructions`: None
-- `Theme`: Romantic Comedy
-- `Character reference image`: [Lena](https://en.wikipedia.org/wiki/Lenna)
-
-<p align="center">
-  <img width="500" height="2666" alt="demo2" src="https://github.com/Yutarop/comic-generator/blob/main/demo/demo2.png" /> 
-</p>
-
 > This is one-shot attempt, no editing.
 > There is a typo and a repeated line, but pretty good!
 
