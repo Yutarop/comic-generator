@@ -8,7 +8,7 @@
 This repo shows how far **Nano Banana Pro** can go in making manga-style comics from scratch. 
 Just give it a one-sentence theme or idea, and optionally add detailed instructions or a character reference image, to bring your idea to life as a manga.  
 With this, you can:
-- Generate a complete 1–7 page manga automatically
+- Generate a complete 1–7 page manga in a few minutes
 - Let the LLM create a full plot
 - Use a character reference image to keep designs consistent
 
